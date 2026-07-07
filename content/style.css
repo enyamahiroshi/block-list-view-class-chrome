@@ -1,0 +1,327 @@
+/**
+ * Block List View Class - Chrome 拡張機能版スタイル
+ * 元プラグインの editor.scss（ビルド済み CSS）を再現
+ */
+
+/* リストビュー行のレイアウト調整 */
+/* !important: エディター本体の display 指定（table-cell）を上書きするため必要 */
+.block-editor-list-view-block__contents-cell {
+  align-items: center;
+  display: flex !important;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.block-editor-list-view-block__contents-container {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ============================
+   追加 CSS クラス入力欄
+   ============================ */
+.blvc-class-row {
+  flex: 0 0 100px;
+  padding: 0 8px 0 0;
+}
+
+.blvc-class-input {
+  background: #e8e8e8;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-sizing: border-box;
+  color: #3c434a;
+  display: block;
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 1px 4px;
+  width: 100%;
+}
+
+/* 値が入っているときは白背景 */
+.blvc-class-input:not(:placeholder-shown) {
+  background: #fff;
+}
+
+.blvc-class-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.blvc-class-input:focus {
+  background: #fff;
+  border-color: #007cba;
+  box-shadow: inset 0 0 0 1px #007cba;
+  outline: none;
+}
+
+/* ============================
+   ブロック名インライン編集
+   ============================ */
+.blvc-name-input {
+  background: #fff;
+  border: 1px solid #007cba;
+  border-radius: 2px;
+  color: inherit;
+  display: inline-block;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  margin: 0;
+  max-width: 180px;
+  min-width: 60px;
+  padding: 0 3px;
+  vertical-align: middle;
+}
+
+.blvc-name-input:focus {
+  box-shadow: 0 0 0 1px #007cba;
+  outline: none;
+}
+
+/* ============================
+   複数選択チェックボックス
+   ============================ */
+.blvc-bulk-checkbox {
+  accent-color: #007cba;
+  cursor: pointer;
+  flex: 0 0 auto;
+  height: 13px;
+  margin: 0 2px 0 0;
+  width: 13px;
+}
+
+/* 選択中の行のハイライト */
+/* !important: エディターの行背景色（hover/selected）を上書きするため必要 */
+tr.blvc-selected,
+li.blvc-selected {
+  background-color: rgba(0, 124, 186, 0.1) !important;
+}
+
+/* ============================
+   一括編集パネル
+   ============================ */
+.blvc-bulk-panel {
+  background: #fff;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  bottom: 60px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  font-size: 12px;
+  left: 8px;
+  padding: 10px 12px;
+  position: fixed;
+  width: 268px;
+  z-index: 99999;
+}
+
+/* リストビューサイドバー内へのドッキング表示 */
+/* fixed 配置だとウィンドウ下端が画面外にある環境で隠れるため、通常フローで上部に置く */
+.blvc-bulk-panel--docked {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  bottom: auto;
+  box-shadow: none;
+  flex: 0 0 auto;
+  left: auto;
+  margin: 0;
+  position: static;
+  width: auto;
+}
+
+.blvc-bulk-panel[hidden] {
+  display: none;
+}
+
+.blvc-bulk-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.blvc-bulk-count {
+  color: #1e1e1e;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.blvc-bulk-deselect {
+  background: none;
+  border: none;
+  color: #007cba;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  padding: 0;
+}
+
+.blvc-bulk-deselect:hover {
+  text-decoration: underline;
+}
+
+.blvc-bulk-section {
+  border-top: 1px solid #e8e8e8;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.blvc-bulk-label {
+  color: #757575;
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.blvc-bulk-row {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.blvc-bulk-name-input,
+.blvc-bulk-class-input {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  color: #1e1e1e;
+  flex: 1 1 auto;
+  font-size: 11px;
+  min-width: 0;
+  padding: 3px 5px;
+}
+
+.blvc-bulk-name-input:focus,
+.blvc-bulk-class-input:focus {
+  border-color: #007cba;
+  box-shadow: 0 0 0 1px #007cba;
+  outline: none;
+}
+
+.blvc-bulk-name-input::placeholder,
+.blvc-bulk-class-input::placeholder {
+  color: #aaa;
+}
+
+.blvc-bulk-number-label {
+  align-items: center;
+  color: #444;
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 10px;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.blvc-bulk-number-label input[type="checkbox"] {
+  accent-color: #007cba;
+  margin: 0;
+}
+
+.blvc-bulk-class-mode {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  color: #1e1e1e;
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 10px;
+  padding: 2px;
+}
+
+.blvc-bulk-btn {
+  background: #007cba;
+  border: none;
+  border-radius: 2px;
+  color: #fff;
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.blvc-bulk-btn:hover {
+  background: #006ba1;
+}
+
+.blvc-bulk-btn:active {
+  background: #005a8a;
+}
+
+/* ============================
+   右クリック コンテキストメニュー
+   ============================ */
+.blvc-context-menu {
+  background: #fff;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  font-size: 12px;
+  min-width: 210px;
+  padding: 4px 0;
+  position: fixed;
+  z-index: 999999;
+}
+
+.blvc-context-item {
+  background: none;
+  border: none;
+  color: #1e1e1e;
+  cursor: pointer;
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 6px 14px;
+  text-align: left;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.blvc-context-item:hover {
+  background: #f0f6fc;
+  color: #007cba;
+}
+
+.blvc-context-item:active {
+  background: #e5f0f9;
+}
+
+.blvc-context-sep {
+  background: #e8e8e8;
+  height: 1px;
+  margin: 4px 0;
+}
+
+/* ============================
+   トースト通知
+   ============================ */
+.blvc-toast {
+  background: #1e1e1e;
+  border-radius: 4px;
+  bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 12px;
+  opacity: 0;
+  padding: 8px 14px;
+  pointer-events: none;
+  position: fixed;
+  right: 24px;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 999999;
+}
+
+.blvc-toast.blvc-toast--show {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Block List View Class",
+  "version": "1.0.0",
+  "description": "WordPress ブロックエディタのリストビューを拡張。ブロック名のインライン編集・追加 CSS クラスの直接入力・一括編集・DOM/CSS コピー機能を追加します。",
+  "minimum_chrome_version": "111",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/wp-admin/post.php*",
+        "*://*/wp-admin/post-new.php*",
+        "*://*/wp-admin/site-editor.php*",
+        "*://*/*/wp-admin/post.php*",
+        "*://*/*/wp-admin/post-new.php*",
+        "*://*/*/wp-admin/site-editor.php*"
+      ],
+      "js": [ "content/main.js" ],
+      "css": [ "content/style.css" ],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    }
+  ]
+}
