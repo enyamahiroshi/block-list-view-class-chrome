@@ -302,6 +302,49 @@ li.blvc-selected {
 }
 
 /* ============================
+   ヒントツールチップ
+   ============================ */
+.blvc-tooltip {
+  background: #1e1e1e;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.5;
+  max-width: 260px;
+  opacity: 0;
+  padding: 5px 9px;
+  pointer-events: none;
+  position: fixed;
+  transition: opacity 0.15s ease;
+  z-index: 999999;
+}
+
+.blvc-tooltip--show {
+  opacity: 1;
+}
+
+/* 吹き出しの矢印（既定は要素の下に表示＝上向き矢印） */
+.blvc-tooltip::before {
+  border-bottom: 5px solid #1e1e1e;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  bottom: 100%;
+  content: "";
+  left: 50%;
+  margin-left: -5px;
+  position: absolute;
+}
+
+/* 要素の上に表示する場合は下向き矢印 */
+.blvc-tooltip--above::before {
+  border-bottom: none;
+  border-top: 5px solid #1e1e1e;
+  bottom: auto;
+  top: 100%;
+}
+
+/* ============================
    トースト通知
    ============================ */
 .blvc-toast {

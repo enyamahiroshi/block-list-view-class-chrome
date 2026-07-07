@@ -70,6 +70,92 @@
     }
 
     // ============================
+    // ヒントツールチップ
+    // ============================
+    // data-blvc-tip 属性を持つ要素にマウスオンして少し待つと吹き出しでヒントを表示する
+    const TOOLTIP_DELAY = 600;
+    let tooltipEl = null;
+    let tooltipTimer = null;
+    let tooltipTarget = null;
+
+    function hideTooltip() {
+      clearTimeout( tooltipTimer );
+      tooltipTimer = null;
+      tooltipTarget = null;
+      if ( tooltipEl ) tooltipEl.classList.remove( 'blvc-tooltip--show' );
+    }
+
+    function showTooltip( target ) {
+      // 表示待ちの間に DOM から消えた場合は何もしない
+      if ( ! document.body.contains( target ) ) return;
+
+      const text = target.getAttribute( 'data-blvc-tip' );
+      if ( ! text ) return;
+
+      if ( ! tooltipEl || ! document.body.contains( tooltipEl ) ) {
+        tooltipEl = document.createElement( 'div' );
+        tooltipEl.className = 'blvc-tooltip';
+        tooltipEl.setAttribute( 'role', 'tooltip' );
+        document.body.appendChild( tooltipEl );
+      }
+      tooltipEl.textContent = text;
+
+      // 画面外で一旦レイアウトさせてサイズを実測してから配置する
+      tooltipEl.style.left = '-9999px';
+      tooltipEl.style.top = '0px';
+      const tipRect = tooltipEl.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+
+      let left = rect.left + rect.width / 2 - tipRect.width / 2;
+      left = Math.max(
+        8,
+        Math.min( left, window.innerWidth - tipRect.width - 8 )
+      );
+
+      // 基本は要素の下に表示し、収まらない場合は上に反転
+      let top = rect.bottom + 8;
+      let above = false;
+      if ( top + tipRect.height > window.innerHeight - 8 ) {
+        top = rect.top - tipRect.height - 8;
+        above = true;
+      }
+
+      tooltipEl.classList.toggle( 'blvc-tooltip--above', above );
+      tooltipEl.style.left = `${ left }px`;
+      tooltipEl.style.top = `${ top }px`;
+      tooltipEl.classList.add( 'blvc-tooltip--show' );
+    }
+
+    // 委譲リスナーで data-blvc-tip 付き要素のホバーを一括監視する
+    document.addEventListener( 'mouseover', ( e ) => {
+      const target =
+        e.target instanceof Element
+          ? e.target.closest( '[data-blvc-tip]' )
+          : null;
+      if ( ! target ) return;
+      // 同一要素内の移動ではタイマーを維持する
+      if ( target === tooltipTarget ) return;
+      hideTooltip();
+      tooltipTarget = target;
+      tooltipTimer = setTimeout( () => showTooltip( target ), TOOLTIP_DELAY );
+    } );
+
+    document.addEventListener( 'mouseout', ( e ) => {
+      if ( ! tooltipTarget ) return;
+      // 対象要素の外へ出たときだけ隠す（子要素間の移動は無視）
+      if (
+        ! ( e.relatedTarget instanceof Element ) ||
+        ! tooltipTarget.contains( e.relatedTarget )
+      ) {
+        hideTooltip();
+      }
+    } );
+
+    // スクロール・クリック操作中はヒントを消す
+    document.addEventListener( 'scroll', hideTooltip, true );
+    document.addEventListener( 'mousedown', hideTooltip, true );
+
+    // ============================
     // 一括編集パネル
     // ============================
 
@@ -122,7 +208,7 @@
           <span class="blvc-bulk-label">名前の一括変更</span>
           <div class="blvc-bulk-row">
             <input type="text" class="blvc-bulk-name-input" placeholder="新しいブロック名">
-            <label class="blvc-bulk-number-label">
+            <label class="blvc-bulk-number-label" data-blvc-tip="名前の末尾に -1, -2… と連番を付加">
               <input type="checkbox" class="blvc-bulk-number-check">
               連番
             </label>
@@ -133,7 +219,7 @@
           <span class="blvc-bulk-label">クラスの一括編集</span>
           <div class="blvc-bulk-row">
             <input type="text" class="blvc-bulk-class-input" placeholder="クラス名">
-            <select class="blvc-bulk-class-mode">
+            <select class="blvc-bulk-class-mode" data-blvc-tip="追加：既存クラスに追加 ／ 置換：丸ごと置き換え ／ 削除：指定クラスを削除">
               <option value="add">追加</option>
               <option value="replace">置換</option>
               <option value="remove">削除</option>
@@ -271,6 +357,10 @@
       checkbox.type = 'checkbox';
       checkbox.className = 'blvc-bulk-checkbox';
       checkbox.setAttribute( 'aria-label', '複数選択' );
+      checkbox.setAttribute(
+        'data-blvc-tip',
+        'チェックで複数選択して名前・クラスを一括編集'
+      );
 
       checkbox.addEventListener( 'change', () => {
         if ( checkbox.checked ) {
@@ -315,6 +405,11 @@
         );
 
       if ( ! btnEl ) return;
+
+      btnEl.setAttribute(
+        'data-blvc-tip',
+        'ダブルクリックで名前を変更 ／ 右クリックでHTML・CSSをコピー'
+      );
 
       btnEl.addEventListener( 'dblclick', ( e ) => {
         e.preventDefault();
@@ -391,6 +486,10 @@
       classInput.className = 'blvc-class-input';
       classInput.placeholder = '追加 CSS クラス';
       classInput.setAttribute( 'aria-label', '追加 CSS クラス' );
+      classInput.setAttribute(
+        'data-blvc-tip',
+        '追加CSSクラスを入力（自動保存・サイドバーと同期）'
+      );
 
       // 現在の値をセット
       const currentAttrs = select( STORE ).getBlockAttributes( clientId );
